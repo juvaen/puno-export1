@@ -1,0 +1,212 @@
+// 16032020 DONE       --> UPLOAD info - text from external source(eg.Cezaria.txt);--- even better: it is possible
+              //                         to upload html file and format it with css style.
+              //          NEXT STEP  --> add BUTTON in to 'xxx' object and use it to unload 
+// --> using Array for cheking which info-text is visible and which has to be upload;
+// 18032020 --> I play with CSS + HTML
+// [solved] --> problem with random comas [solved] by changeing alltext = alltext.split(...).join(</br>) to .join("")
+// WHY? DOM object #xxx uploads twice?
+// 21032020 ---- this version has working touch, it is pretty responsible, and CSS animation was added to #xxx object.
+// Can use eny FONT I need from Google Fonts.
+// BUT after I added animation-delay it looks like there is junk #xxx object shown before right #xxx is animated. The 'junk #xxx" isn't animated, so...
+// AND there is a strange change (blow) in the size of gallery right after you click on picture
+// [kind of solved] I added opacity: 0; to start with invisible #xxx odject and animation-fill-mode: forwards; to retain an opacity setup from the last frame of the animation.
+// I'm not sure if this is solution because the first 'junk #xxx' is still there as well as the 'blow' of size of the scene. It is an junk action...
+// 22032020 ------ This is FASCINATIG! I add another animation. Now #xxx is not only changes its opacity but it comes from top: -100% to top: 3%;
+// IMPROVE behaviour of #xxx - CLOSE BUTTON in the object, can't see whole text on mobile. PLEASE
+  //add pictures (in proper order ;) - 12032020
+
+//some time.............JUan Made files with FUNCTIONS and CONSTANTS (arrays) good idea can be used in the future.
+
+
+// 23042020 ----------> The basic interactions has been established:
+                                  ORBIT CONTROLS mechanics
+                                  CLICKS and TOUCHES
+                                  CAN ADD and CONTROL elements in to DOM element eg CLOSE BUTTON [later: share buttons, menu, image...] 
+                                  I have a problem with adress child elemrnt in DOM  element made with external .html file.
+                                  and a problem with adding one DOM into Another  obiekt.getElementById(DOM1).appendChild(DOM2)
+                                  I've used that ext. .html file to fire sript wich adds DOM2 into DOM1 (it is why I call it partisanDOMmanipulations)
+                                  I put PICTURES back to theirs initial positions between two pillars. 
+                                  I got STARTED an obrazyArray() I'm  going to use it for all objects ass data base of theirs details.
+                                  
+// 240420202 ---------> I sorted out a probloblem of importing function from external .js file. Here is must do :
+                              add 'export' before your function
+                              all variable used in side function must be set as a parameter in function definition eg:
+                                          export function makePicture(THREE, scene, imageName, xpoz, ypoz, zpoz, obraz) {.......};  
+
+                         External array - the same method works for array object  :)
+                              import { obrazyArray } from "/js/lib/obrazyArray.js";                     
+
+// 26042020 -----> I have shorten a code!!! by using a for loop and external arrays/functions.
+                    Problem Halecki-Gawenda has gone (!) after for, if, arrays were implemented. actually, it has gone after I got rid wit swift statement (?)
+                    Now code is "nicer" and mor readable and works better!
+                    Ready for futher works
+
+                    I fixed: problem - if info was open an object under the neef could be accidently picked up. 
+                              now, to close info one has to pick close button
+                              info is not transparent
+
+// tasks: scrollig solved : 01052020
+
+//02052020 solved iframe + YT video in iframe
+          check: Three.js First Person Controls ... eg https://github.com/jeromeetienne/threex.proceduralcity
+
+         
+
+//08052020 ---------------------REMEMBER ABOUT UPDATE!!!
+                                          I've updated OrbitContorols and they work good enought. 
+
+                                          NEXT build new room with meshes as walls. let's create simple >>>>labirynth<<<
+
+                                          NEXT >>> collision detection <<<< to go through out labirynth
+                                          
+                                          NEXT doble click or double touch point where camera should move to
+                                          .
+
+
+
+
+               /* DIFFERENT STUFF: (old part of important code):
+
+
+`<html data-lt-installed="true"><head><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><title></title><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><meta name="robots" content="noindex, nofollow" /><meta name="googlebot" content="noindex, nofollow" /><meta name="viewport" content="width=device-width, initial-scale=1" /><style id="compiled-css" type="text/css">body {margin: 0;padding: 0;overflow: hidden;height: 100%;}#container {width: 1000px;margin: 0 auto;}.header {width: 1000px;height: 30px;background-color: #dadada;}.wrapper {width: 1000px;overflow: scroll;position: relative;height: 800px;}</style></head><body><div id="container"><div class="header"></div><div class="wrapper"><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vivamusporta tortor sed metus. Nam pretium. Sed tempor. Integer ullamcorper,odio quis porttitor sagittis, nisl erat tincidunt massa, eu eleifenderos nibh sollicitudin est. Nulla dignissim. Mauris sollicitudin, arcuid sagittis placerat, tellus mauris egestas felis, eget interdum minibh vel lorem. Aliquam egestas hendrerit massa. Suspendisse sed nunet lacus feugiat hendrerit. Nam cursus euismod augue. Aenean vehiculanisl eu quam luctus adipiscing. Nunc consequat justo pretium orci. Mauris hendrerit fermentum massa. Aenean consectetuer est ut arcu.Aliquam nisl massa, blandit at, accumsan sed, porta vel, metus. Duisfringilla quam ut eros.</p></div></div></script></body></html>`
+  
+
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta http-equiv="X-UA-Compatible" content="ie=edge" /><title>Static Template</title><link rel="stylesheet" type="text/css" href="infoBox.css">
+
+        //add little box 'close button' - 13032020
+        let closeGeometry = new THREE.BoxGeometry(30, 30, 5);
+        let closeMaterial = new THREE.MeshPhongMaterial({
+          map: loader.load("textures/buttonClose.png"),
+          transparent: true,
+          opacity: 1
+        });
+        let closeMesh = new THREE.Mesh(closeGeometry, closeMaterial);
+        closeMesh.name = "close";
+        closeMesh.position.set(-300, 125, 250);
+        scene.add(closeMesh);
+*/
+
+<a href="#" id="cez" class="imgCloseButtox">X</a>
+
+
+@viewport {
+  width: device-width;
+  zoom: 1;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+#c {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#xxx {
+  opacity: 0;
+
+  animation: mymove 0.5s;
+  animation-delay: 0.5s;
+  animation-fill-mode: forwards;
+  max-height: 100vh;
+  overflow-y: scroll;
+  /*
+  scroll-snap-type: mandatory;
+  scroll-snap-points-y: repeat(3rem);
+  scroll-snap-type: y mandatory;
+*/
+  background-color: rgb(248, 247, 241);
+  border: 2px solid burlywood;
+  background-size: contain;
+
+  display: flex;
+  top: 3%;
+  left: 3%;
+  /* top: 3%; */
+  width: 90%;
+
+  justify-content: space-around;
+  text-align: justify;
+  text-justify: inter-character;
+  font: 1.2rem "Caladea", serif;
+  color: black;
+
+  padding: 1%;
+
+  border-radius: 4px;
+  position: absolute;
+}
+@keyframes mymove {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/*
+@media all and (max-width: 420px) {
+  aside {
+    float: none;
+    width: auto;
+  }
+}
+*/
+
+img {
+  scroll-snap-align: start;
+  margin: 1px;
+  width: 30%;
+  height: auto;
+  float: left;
+  padding: 0px 10px 0px 0px;
+}
+
+#imgCloseButtonx {
+  opacity: 0;
+
+  animation: mymove 0.5s;
+  animation-delay: 0.5s;
+  animation-fill-mode: forwards;
+  background-color: #eba612;
+
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Trebuchet MS;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 6px;
+  text-decoration: none;
+  position: absolute;
+  right: 7%;
+  top: 8%;
+}
+#imgCloseButtonx:hover {
+  background-color: #f55229;
+  position: absolute;
+  right: 7%;
+  top: 8%;
+}
+#imgCloseButtonx:active {
+  position: absolute;
+  right: 7%;
+  top: 8%;
+}
+
+#xxx .imgCloseButton {
+  width: 20px;
+  float: right;
+  padding: 0px 0px 0px 10px;
+}
+
+aside {
+  scroll-snap-align: start;
+
+  margin: 5%;
+  float: left;
+  width: 98%;
+}

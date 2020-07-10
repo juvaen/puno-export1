@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+    <style type="text/css">
+       body {
+        max-height: 50%;
+
+background-color: rgb(248, 247, 241);
+border: 2px solid burlywood;
+background-size: contain;
+
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.scrolling-box {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+      </style>
+  <body>
+    <div class="scrolling-box">
+      <section id="1">This is the first section</section>
+      <section id="2">This is the second section</section>
+      <section id="3">This is the third section</section>
+    </div>
+    
+  </body>
+</html>

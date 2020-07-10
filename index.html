@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Caladea&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <title>PUNO #80 Exhibition</title>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script src="js/lib/obrazyArray.js"></script>
+    <script>
+      function partyzantDodajeElementyDoXXX() {
+        let ga = document.getElementById("xxx");
+        let gaw = document.getElementById("partisan");
+        let gawimg = document.getElementById("imgCloseButtonx");
+        ga.replaceChild(gawimg, gaw);
+      }
+    </script>
+    <script type="module">
+      function closeTextInfo() {
+        let okienko = document.getElementById("cleanDOM");
+        let closeB = document.getElementById("imgCloseButtonx");
+        //let infoIsOpen = "no";
+        okienko.parentNode.removeChild(okienko);
+        closeB.remove();
+      }
+      /*
+      (function() {
+        var script = document.createElement("script");
+        script.onload = function() {
+          var stats = new Stats();
+          document.body.appendChild(stats.dom);
+          requestAnimationFrame(function loop() {
+            stats.update();
+            requestAnimationFrame(loop);
+          });
+        };
+        script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
+        document.head.appendChild(script);
+      })();
+      */
+      var x = 274,
+        ypoz = 5,
+        zpoz = 279;
+
+      import * as THREE from "/js/vendor/three/three.module.js";
+      import { OrbitControls } from "/js/vendor/three/OrbitControls.js";
+
+      import { makePicture, makeGalleryWalls } from "/js/lib/funkcje.js";
+      import { obrazyArray } from "/js/lib/obrazyArray.js";
+      var camera, scene, renderer, stats, controls, rayCast, mouse, container; //
+      var texture, x, intersects, imageName;
+      var cubeGeometry1, material1, mesh1;
+      var closeGeometry, closeMaterial, text2, close;
+      var docBody;
+      const controlsTarget = new THREE.Vector3();
+      controlsTarget.set(0, 1.8, 0);
+      //let infoIsOpen = "no";
+
+      function main() {
+        const canvas = document.querySelector("#c");
+        const renderer = new THREE.WebGLRenderer({ canvas });
+
+        let info = document.createElement("a");
+        info.id = "info";
+        info.class = "infoClass";
+        info.innerHTML = `<strong>It is a draft version of the Virtual Gallery. NO UX applied ;)</strong><br> <br>
+        MOUSE LEFT BUTTON or TOUCH for left-right <br> 
+        MOUSE RIGHT or TWO FINGERS TOUCH for forward-backward <br> 
+        CLICK/TOUCH on any PICTURE shows an INFO WINDOW`;
+        document.body.appendChild(info);
+
+        const fov = 90;
+
+        const aspect = window.innerWidth / window.innerHeight;
+        const near = 0.1;
+        const far = 1500;
+        const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        //camera.position.set(-134, 6, -284);
+        camera.position.set(0, 6, -10);
+        const scene = new THREE.Scene();
+
+        //console.log(czystyDOM);
+        // console.log({ canvas });
+        window.addEventListener(
+          "touchstart",
+          event => {
+            // prevent the window from scrolling
+            event.preventDefault();
+            //onMouseClick(event.touches[0]);
+            onMouseClick();
+          },
+          { passive: false }
+        );
+
+        window.addEventListener("touchmove", event => {
+          setPickPosition(event.touches[0]);
+        });
+
+        window.addEventListener("touchend", clearPickPosition);
+
+        ///////////////////////////////////////////////////
+        //MAKE GALLERY WALLS
+        makeGalleryWalls(THREE, scene);
+        var ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(ambientLight);
+
+        console.log(scene.children);
+        /////////////////////////////////////////////////////////////
+        //MAKE PICTURES - OBJECTS on walls
+        for (var i = 0; i < obrazyArray.length; i++) {
+          let tablica = obrazyArray[i];
+          makePicture(
+            THREE,
+            scene,
+            tablica.name,
+            tablica.xpoz,
+            tablica.ypoz,
+            tablica.zpoz,
+            tablica.rot,
+            "textures/obrazy/" + tablica.name + ".jpg"
+          );
+        }
+
+        /////////////////////////////////////////////////////
+        function resizeRendererToDisplaySize(renderer) {
+          const canvas = renderer.domElement;
+          const width = canvas.clientWidth;
+          const height = canvas.clientHeight;
+          const needResize = canvas.width !== width || canvas.height !== height;
+          if (needResize) {
+            renderer.setSize(width, height, false);
+          }
+          return needResize;
+        }
+
+        // PickHelper for mouse and touchscreens 12.03.2020
+        class PickHelper {
+          constructor() {
+            this.raycaster = new THREE.Raycaster();
+            this.pickedObject = null;
+            this.pickedObjectSavedColor = 0;
+          }
+          pick(normalizedPosition, scene, camera, time) {
+            if (this.pickedObject) {
+              this.pickedObject = undefined;
+            }
+
+            // cast a ray through the frustum
+
+            this.raycaster.setFromCamera(normalizedPosition, camera);
+            //meshObjects = [scene.children];
+            // get the list of objects the ray intersected
+            const intersectedObjects = this.raycaster.intersectObjects(
+              scene.children
+            );
+
+            if (intersectedObjects.length) {
+              // pick the first object. It's the closest one
+
+              this.pickedObject = intersectedObjects[0].object;
+              let pObject = this.pickedObject;
+              let docBody = document.body;
+
+              // console.log(infoIsOpen);
+              // console.log(document.getElementById("xxx"));
+              // REMOVE OLD AND ADD NEW text info useing external array.
+              if (document.getElementById("xxx") == null) {
+                for (var i = 0; i < obrazyArray.length; i++) {
+                  if (this.pickedObject.name == obrazyArray[i].name) {
+                    removeOldObjects(docBody);
+                    var dataNewObject = "txt/" + obrazyArray[i].name + ".html";
+                    makeNewObject(dataNewObject, pObject);
+                    //let infoIsOpen = "yes";
+                  }
+                }
+              }
+
+              function removeOldObjects(docBody, text2) {
+                if (docBody.hasChildNodes()) {
+                  let nameText = document.getElementById("cleanDOM");
+                  switch (nameText) {
+                    case null:
+                      break;
+                    default:
+                      closeTextInfo();
+                  }
+
+                  return;
+                }
+              }
+
+              ////////////////////////////////////////////////////////////
+              // making infoBox element
+
+              function makeNewObject(dataNewObject, pObject) {
+                console.log(dataNewObject);
+                console.log(`camera `, camera.position);
+                console.log(`target `, controls.target);
+
+                let czystyDOM = document.createElement("iframe");
+                czystyDOM.id = "cleanDOM";
+                czystyDOM.src = dataNewObject;
+                czystyDOM.style.border = `0px`;
+                document.body.appendChild(czystyDOM);
+
+                let text1 = document.createElement("a");
+                text1.id = "imgCloseButtonx";
+                text1.class = "infoCloseButton";
+
+                document.body.appendChild(text1);
+                //document.getElementsByTagName(`section`).appendChild(text1);
+                document.getElementById("imgCloseButtonx").innerHTML = "X";
+                text1.ontouchstart = () => {
+                  closeTextInfo();
+                };
+
+                text1.onclick = () => {
+                  closeTextInfo();
+                };
+              }
+
+              clearPickPosition();
+            }
+          }
+        }
+
+        const pickPosition = { x: 0, y: 0 };
+        const pickHelper = new PickHelper();
+        clearPickPosition();
+
+        ///controls
+        var controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.015;
+        controls.enableZoom = false;
+        controls.zoomSpeed = 3;
+        controls.minDistance = 100;
+        controls.maxDistance = 200;
+        controls.minZoom = 0;
+        controls.autoRotate = false;
+        controls.enablePan = true;
+        controls.panSpeed = 3;
+        controls.target.copy(controlsTarget);
+        ///// to change orbit to MAP controls use settings
+        /*
+        controls.mouseButtons.LEFT = MOUSE.PAN;
+        controls.mouseButtons.RIGHT = MOUSE.ROTATE;
+
+        controls.touches.ONE = TOUCH.PAN;
+        controls.touches.TWO = TOUCH.DOLLY_ROTATE;
+        */
+
+        controls.touches = {
+          ONE: THREE.TOUCH.ROTATE,
+          TWO: THREE.TOUCH.DOLLY_PAN
+        };
+        controls.mouseButtons = {
+          LEFT: THREE.MOUSE.ROTATE,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: THREE.MOUSE.PAN
+        };
+        //controls.autoRotateSpeed = 0.5;
+        controls.maxPolarAngle = Math.PI / 2; // Limit angle of visibility
+        controls.minPolarAngle = Math.PI / 2;
+
+        function render(time) {
+          time *= 0.001; // convert to seconds;
+
+          const camXmin = 550,
+            camXmax = camXmin - camXmin * 2,
+            camZmax = 240,
+            camZmin = camZmax - camZmax * 2;
+          //console.log(camXmax);
+          let camPosx = camera.position.x,
+            camPosz = camera.position.z;
+          camPosx >= camXmin
+            ? //? (camera.position.x = camXmin - 1)
+              controls.target.copy(controlsTarget)
+            : camPosx <= camXmax
+            ? //? (camera.position.x = camXmax + 1)
+              controls.target.copy(controlsTarget)
+            : camPosx;
+          camPosz >= camZmax
+            ? //? (camera.position.z = camZmax - 1)
+              controls.target.copy(controlsTarget)
+            : camPosz <= camZmin
+            ? //? (camera.position.z = camZmin + 1)
+              controls.target.copy(controlsTarget)
+            : camZmin;
+
+          if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+          }
+
+          pickHelper.pick(pickPosition, scene, camera, time);
+
+          renderer.render(scene, camera);
+          controls.update();
+          //controls.handleResize();
+          requestAnimationFrame(render);
+          //createControls(camera);
+        }
+        //
+        requestAnimationFrame(render);
+
+        function getCanvasRelativePosition(event) {
+          const rect = canvas.getBoundingClientRect();
+          return {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top
+          };
+        }
+
+        function setPickPosition(event) {
+          const pos = getCanvasRelativePosition(event);
+          pickPosition.x = (pos.x / canvas.clientWidth) * 2 - 1;
+          pickPosition.y = (pos.y / canvas.clientHeight) * -2 + 1; // note we flip Y
+        }
+
+        function clearPickPosition() {
+          // unlike the mouse which always has a position
+          // if the user stops touching the screen we want
+          // to stop picking. For now we just pick a value
+          // unlikely to pick something
+          pickPosition.x = -100000;
+          pickPosition.y = -100000;
+        }
+        window.addEventListener("click", setPickPosition);
+        window.addEventListener("mouseout", clearPickPosition);
+        window.addEventListener("mouseleave", clearPickPosition);
+
+        window.addEventListener(
+          "touchstart",
+          event => {
+            // prevent the window from scrolling
+            event.preventDefault();
+            setPickPosition(event.touches[0]);
+          },
+          { passive: false }
+        );
+
+        window.addEventListener("touchmove", event => {
+          setPickPosition(event.touches[0]);
+        });
+
+        window.addEventListener("touchend", clearPickPosition);
+      }
+
+      function closeInfo() {
+        removeOldObjects(docBody);
+      }
+
+      main();
+    </script>
+  </body>
+</html>
